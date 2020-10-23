@@ -191,6 +191,20 @@ class TensorBoardLogger(LightningLoggerBase):
                     type(e)(e.message + m)
 
     @rank_zero_only
+    def log_figures(self, figures: Dict[str, float], step: Optional[int] = None, **kwargs) -> None:
+
+        for k, v in figures.items():
+            self.experiment.add_figure(tag=k, figure=v, global_step=step, **kwargs)
+
+    @rank_zero_only
+    def log_images(self, images: Dict[str, float], step: Optional[int] = None, **kwargs) -> None:
+
+        for k, v in images.items():
+            self.experiment.add_figure(tag=k, figure=v, global_step=step, **kwargs)
+
+        #TODO: check dataformats of images
+
+    @rank_zero_only
     def log_graph(self, model: LightningModule, input_array=None):
         if self._log_graph:
             if input_array is None:
